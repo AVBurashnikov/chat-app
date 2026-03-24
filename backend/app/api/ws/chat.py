@@ -1,5 +1,7 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from app.db.database import SessionLocal
+from app.models.message import Message
 from app.services.connection_manager import manager
 from app.core.security import get_user_from_token
 
@@ -13,6 +15,8 @@ async def websocket_endpoint(websocket: WebSocket):
     if not token:
         await websocket.close(code=1008)
         return
+
+    db = SessionLocal()
 
     try:
         username = get_user_from_token(token)
@@ -32,6 +36,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 f"{username}: {message}",
                 to_user
             )
+
+            msg = Message(sender=username, receiver=to_user, text=message)
+            db.add(msg)
+            db.commit()
 
     except WebSocketDisconnect:
         manager.disconnect(username)

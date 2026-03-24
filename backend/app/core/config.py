@@ -1,3 +1,4 @@
 SECRET_KEY = "supersecretkey"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+DATABASE_URL = "postgresql://postgres:root@localhost:5432/chat_db"
