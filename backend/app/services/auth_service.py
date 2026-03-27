@@ -2,17 +2,16 @@ from datetime import datetime, timedelta
 from jose import jwt
 from sqlalchemy.orm import Session
 
-from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import settings
 from app.core.security import hash_password, verify_password
-from app.db.fake_db import users_db
 from app.models.user import User
 
 
 def create_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=settings.atem)
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 
 def register_user(db: Session, username: str, password: str):

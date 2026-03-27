@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import get_user_from_token
 from app.db.deps import get_db
-from app.services.message_service import get_chat_history
+from app.services.message_service import get_chat_history, get_user_chats
 from app.schemas.message import MessageOut
 from typing import List
 
@@ -20,3 +20,10 @@ def get_messages(
     current_user = get_user_from_token(token)
 
     return get_chat_history(db, current_user, username)
+
+@router.get("/chats")
+def get_chats(request: Request, db: Session = Depends(get_db)):
+    token = request.headers.get("Authorization").replace("Bearer ", "")
+    current_user = get_user_from_token(token)
+
+    return get_user_chats(db, current_user)

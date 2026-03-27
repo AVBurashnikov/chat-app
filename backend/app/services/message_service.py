@@ -9,3 +9,21 @@ def get_chat_history(db: Session, user1: str, user2: str):
             and_(Message.sender == user2, Message.receiver == user1)
         )
     ).order_by(Message.id.asc()).all()
+
+def get_user_chats(db, username: str):
+    messages = db.query(Message).filter(
+        or_(
+            Message.sender == username,
+            Message.receiver == username
+        )
+    ).all()
+
+    users = set()
+
+    for m in messages:
+        if m.sender != username:
+            users.add(m.sender)
+        if m.receiver != username:
+            users.add(m.receiver)
+
+    return list(users)

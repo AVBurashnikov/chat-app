@@ -2,7 +2,7 @@ from jose import jwt, JWTError
 from fastapi import HTTPException
 from passlib.context import CryptContext
 
-from app.core.config import SECRET_KEY, ALGORITHM
+from app.core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -14,7 +14,7 @@ def verify_password(password: str, hashed: str):
 
 def get_user_from_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         username = payload.get("sub")
 
         if not username:

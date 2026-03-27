@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import auth, messages
 from app.api.ws import chat
@@ -8,6 +9,14 @@ from app.db.database import Base, engine
 Base.metadata.create_all(bind=engine)
 
 application = FastAPI()
+
+application.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 application.include_router(messages.router)
 application.include_router(auth.router)

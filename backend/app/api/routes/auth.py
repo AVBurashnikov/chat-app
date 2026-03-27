@@ -23,6 +23,6 @@ def login(data: UserLogin, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_token({"sub": user["username"]})
+    token = create_token({"sub": user.username})
 
     return {"access_token": token, "token_type": "bearer"}
